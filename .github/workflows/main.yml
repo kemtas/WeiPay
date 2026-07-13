@@ -1,0 +1,11 @@
+name: WeiPay iOS Build
+on: [workflow_dispatch, push]
+jobs:
+  build-ios:
+    runs-on: macos-13
+    steps:
+      - uses: actions/checkout@v4
+      - run: ls /Applications | grep Xcode
+      - run: xcodebuild -version
+      - run: ls -la ios/
+      - run: cd ios && xcodebuild -project WeiPay.xcodeproj -list
