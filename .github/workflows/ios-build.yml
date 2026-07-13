@@ -1,36 +1,11 @@
 name: WeiPay iOS Build
-
-on:
-  workflow_dispatch:
-
+on: [workflow_dispatch, push]
 jobs:
   build-ios:
     runs-on: macos-13
-    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
       - run: ls /Applications | grep Xcode
-      - run: sudo xcode-select -s /Applications/Xcode_14.2.app || true
       - run: xcodebuild -version
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '10'
-      - run: node -v
-      - run: npm install --legacy-peer-deps
-        continue-on-error: true
-      - name: Build glog (RN 0.55 fix)
-        run: |
-          cd node_modules/react-native/third-party/glog
-          ./configure || true
-        continue-on-error: true
       - run: ls -la ios/
-      - name: Build
-        run: |
-          cd ios
-          xcodebuild -project WeiPay.xcodeproj -scheme WeiPay -configuration Debug -sdk iphonesimulator -derivedDataPath build CODE_SIGNING_ALLOWED=NO build 2>&1 | tee ../ios-build.log
-        continue-on-error: true
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: ios-build-log
-          path: ios-build.log
+      - run: cd ios && xcodebuild -project WeiPay.xcodeproj -list
